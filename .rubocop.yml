@@ -8,9 +8,6 @@ AllCops:
   Exclude:
     - 'test/dummy/db/schema.rb'
 
-Gemspec/DateAssignment:
-  Enabled: true
-
 Gemspec/RequireMFA:
   Enabled: false
 
