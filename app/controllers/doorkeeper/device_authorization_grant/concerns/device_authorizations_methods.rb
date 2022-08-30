@@ -16,15 +16,20 @@ module Doorkeeper
         end
 
         def authorize
+          error_code = nil
           device_grant_model.transaction do
             device_grant = device_grant_model.lock.find_by(user_code: user_code)
-            return authorization_error_response(:invalid_user_code) if device_grant.nil?
-            return authorization_error_response(:expired_user_code) if device_grant.expired?
+            if device_grant.nil?
+              error_code = :invalid_user_code
+            elsif device_grant.expired?
+              error_code = :expired_user_code
+            end
+            next if error_code.present?
 
             device_grant.update!(user_code: nil, resource_owner_id: current_resource_owner.id)
           end
 
-          authorization_success_response
+          error_code.present? ? authorization_error_response(error_code) : authorization_success_response
         end
 
         private
