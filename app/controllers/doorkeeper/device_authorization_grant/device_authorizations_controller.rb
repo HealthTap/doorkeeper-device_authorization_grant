@@ -43,7 +43,7 @@ module Doorkeeper
           notice = I18n.t(error_message_key, scope: i18n_flash_scope(:authorize))
           format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
           format.json do
-            render json: { errors: [notice] }, status: :unprocessable_entity
+            render json: { error: notice }, status: :unprocessable_entity
           end
         end
       end
