@@ -8,9 +8,6 @@ AllCops:
   Exclude:
     - 'test/dummy/db/schema.rb'
 
-Gemspec/DateAssignment:
-  Enabled: true
-
 Gemspec/RequireMFA:
   Enabled: false
 
@@ -124,6 +121,8 @@ Metrics/ClassLength:
     - 'test/**/*'
 
 Metrics/MethodLength:
+  Enabled: true
+  Max: 20
   Exclude:
     - '**/migrate/*'
 
