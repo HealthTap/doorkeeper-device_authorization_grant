@@ -121,6 +121,8 @@ Metrics/ClassLength:
     - 'test/**/*'
 
 Metrics/MethodLength:
+  Enabled: true
+  Max: 20
   Exclude:
     - '**/migrate/*'
 
