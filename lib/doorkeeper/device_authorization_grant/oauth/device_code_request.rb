@@ -13,6 +13,7 @@ module Doorkeeper
         attr_accessor :device_grant
 
         validate :client, error: :invalid_client
+        validate :client_supports_grant_flow, error: :unauthorized_client
         validate :device_grant, error: :invalid_grant
 
         # @param server
@@ -81,6 +82,11 @@ module Doorkeeper
         # @return [Boolean]
         def validate_client
           client.present?
+        end
+
+        # @return [Boolean]
+        def validate_client_supports_grant_flow
+          server_config.allow_grant_flow_for_client?(grant_type, client)
         end
 
         # @return [Boolean]
