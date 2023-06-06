@@ -27,17 +27,9 @@ module Doorkeeper
           end
         end
 
+        protected
+
         def before_successful_response; end
-
-        private
-
-        def authorization_success_response
-          respond_to do |format|
-            notice = I18n.t(:success, scope: i18n_flash_scope(:authorize))
-            format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
-            format.json { head :no_content }
-          end
-        end
 
         # @param error_message_key [Symbol]
         def authorization_error_response(error_message_key)
@@ -47,6 +39,16 @@ module Doorkeeper
             format.json do
               render json: { errors: [notice] }, status: :unprocessable_entity
             end
+          end
+        end
+
+        private
+
+        def authorization_success_response
+          respond_to do |format|
+            notice = I18n.t(:success, scope: i18n_flash_scope(:authorize))
+            format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
+            format.json { head :no_content }
           end
         end
 
