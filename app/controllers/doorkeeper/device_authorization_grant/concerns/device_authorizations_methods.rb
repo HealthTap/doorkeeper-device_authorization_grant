@@ -17,15 +17,17 @@ module Doorkeeper
 
         def authorize
           device_grant_model.transaction do
-            device_grant = device_grant_model.lock.find_by(user_code: user_code)
             next authorization_error_response(:invalid_user_code) if device_grant.nil?
             next authorization_error_response(:expired_user_code) if device_grant.expired?
 
             device_grant.update!(user_code: nil, resource_owner_id: current_resource_owner.id)
 
+            before_successful_response
             authorization_success_response
           end
         end
+
+        def before_successful_response; end
 
         private
 
@@ -62,6 +64,10 @@ module Doorkeeper
         # @return [Array<Symbol>]
         def i18n_flash_scope(action)
           %I[doorkeeper flash device_codes #{action}]
+        end
+
+        def device_grant
+          @device_grant ||= device_grant_model.lock.find_by(user_code: user_code)
         end
       end
     end

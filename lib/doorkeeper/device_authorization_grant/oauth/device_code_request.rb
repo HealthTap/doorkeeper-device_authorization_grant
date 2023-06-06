@@ -105,7 +105,7 @@ module Doorkeeper
 
         # @return [Boolean]
         def validate_client_supports_grant_flow
-          server_config.allow_grant_flow_for_client?('device_code', client)
+          Doorkeeper.configuration.allow_grant_flow_for_client?('device_code', client)
         end
 
         # @return [Boolean]
