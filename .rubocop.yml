@@ -8,6 +8,9 @@ AllCops:
   Exclude:
     - 'test/dummy/db/schema.rb'
 
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: true
+
 Gemspec/RequireMFA:
   Enabled: false
 
