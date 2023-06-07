@@ -16,20 +16,30 @@ module Doorkeeper
         end
 
         def authorize
-          error_code = nil
           device_grant_model.transaction do
-            device_grant = device_grant_model.lock.find_by(user_code: user_code)
-            if device_grant.nil?
-              error_code = :invalid_user_code
-            elsif device_grant.expired?
-              error_code = :expired_user_code
-            end
-            next if error_code.present?
+            next authorization_error_response(:invalid_user_code) if device_grant.nil?
+            next authorization_error_response(:expired_user_code) if device_grant.expired?
 
             device_grant.update!(user_code: nil, resource_owner_id: current_resource_owner.id)
-          end
 
-          error_code.present? ? authorization_error_response(error_code) : authorization_success_response
+            before_successful_response
+            authorization_success_response
+          end
+        end
+
+        protected
+
+        def before_successful_response; end
+
+        # @param error_message_key [Symbol]
+        def authorization_error_response(error_message_key)
+          respond_to do |format|
+            notice = I18n.t(error_message_key, scope: i18n_flash_scope(:authorize))
+            format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
+            format.json do
+              render json: { errors: [notice] }, status: :unprocessable_entity
+            end
+          end
         end
 
         private
@@ -39,17 +49,6 @@ module Doorkeeper
             notice = I18n.t(:success, scope: i18n_flash_scope(:authorize))
             format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
             format.json { head :no_content }
-          end
-        end
-
-        # @param error_message_key [Symbol]
-        def authorization_error_response(error_message_key)
-          respond_to do |format|
-            notice = I18n.t(error_message_key, scope: i18n_flash_scope(:authorize))
-            format.html { redirect_to oauth_device_authorizations_index_url, notice: notice }
-            format.json do
-              render json: { error: error_message_key, error_description: notice }, status: :unprocessable_entity
-            end
           end
         end
 
@@ -67,6 +66,10 @@ module Doorkeeper
         # @return [Array<Symbol>]
         def i18n_flash_scope(action)
           %I[doorkeeper flash device_codes #{action}]
+        end
+
+        def device_grant
+          @device_grant ||= device_grant_model.lock.find_by(user_code: user_code)
         end
       end
     end

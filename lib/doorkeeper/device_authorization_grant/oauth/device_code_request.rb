@@ -45,6 +45,25 @@ module Doorkeeper
         private
 
         def generate_access_token
+          # Doorkeeper 5.6.5 introduced an additional argument, see https://github.com/doorkeeper-gem/doorkeeper/pull/1602
+          if Doorkeeper.gem_version >= Gem::Version.new('5.6.5')
+            generate_access_token_with_empty_custom_attributes
+          else
+            generate_access_token_without_custom_attributes
+          end
+        end
+
+        def generate_access_token_with_empty_custom_attributes
+          find_or_create_access_token(
+            device_grant.application,
+            device_grant.resource_owner_id,
+            device_grant.scopes,
+            {},
+            server
+          )
+        end
+
+        def generate_access_token_without_custom_attributes
           find_or_create_access_token(
             device_grant.application,
             device_grant.resource_owner_id,
@@ -86,7 +105,7 @@ module Doorkeeper
 
         # @return [Boolean]
         def validate_client_supports_grant_flow
-          server_config.allow_grant_flow_for_client?('device_code', client)
+          Doorkeeper.configuration.allow_grant_flow_for_client?('device_code', client)
         end
 
         # @return [Boolean]
