@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG.md"
   spec.metadata['rubygems_mfa_required'] = 'true'
-  spec.metadata['github_repo'] = 'https://github.com/HealthTap/doorkeeper-device_authorization_grant'
+  spec.metadata['github_repo'] = 'ssh://github.com/HealthTap/doorkeeper-device_authorization_grant'
 
   spec.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
 
