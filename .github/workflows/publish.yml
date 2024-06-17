@@ -1,0 +1,22 @@
+name: Publish RubyGem package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run_tests:
+    name: Run gem tests
+    uses: ./.github/workflows/tests.yml
+
+  build:
+    name: Verify, build, and publish Ruby gem
+    uses: HealthTap/shared-workflows/.github/workflows/publish_ruby_gem.yml@master
+    needs: run_tests
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gem_package: doorkeeper-device_authorization_grant
