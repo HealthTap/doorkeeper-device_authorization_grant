@@ -1,0 +1,11 @@
+name: Backmerge check
+on: [push]
+
+jobs:
+  call-reusable-workflow:
+    name: Call re-usable workflow
+    permissions:
+      pull-requests: write
+      contents: write
+    secrets: inherit
+    uses: HealthTap/shared-workflows/.github/workflows/backmerge.yml@master

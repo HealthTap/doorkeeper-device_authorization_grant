@@ -1,0 +1,15 @@
+name: Dependabot PR alerts
+
+on:
+  pull_request_target:
+    types:
+      - opened
+    branches:
+      - dependabot-fixes
+      - master
+
+jobs:
+  dependabot-pr-alerts:
+    name: Create JIRA ticket and notify via webhook
+    secrets: inherit
+    uses: HealthTap/shared-workflows/.github/workflows/dependabot_pr_alerts.yml@master
