@@ -1,0 +1,17 @@
+name: Verify gemspec
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify_unpublished:
+    name: Call shared workflow
+    uses: HealthTap/shared-workflows/.github/workflows/verify_unpublished_ruby_gem.yml@master
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+    with:
+      gem_package: doorkeeper-device_authorization_grant
